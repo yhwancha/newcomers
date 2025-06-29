@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
-import type { Location, Place } from '@newcomers/types';
-import { CATEGORY_ICONS } from '@newcomers/shared';
+import type { Location, Place } from '../types';
+import { CATEGORY_LABELS, DEFAULT_LOCATION } from '../utils/constants';
 
 interface GoogleMapProps {
   center: Location | null;
@@ -30,7 +30,7 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({ center, places, onLocation
         await loader.load();
         
         const mapInstance = new google.maps.Map(mapRef.current, {
-          center: center || { lat: 37.5665, lng: 126.9780 },
+          center: center || DEFAULT_LOCATION,
           zoom: 15,
           mapTypeControl: false,
           streetViewControl: false,
@@ -43,7 +43,7 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({ center, places, onLocation
             const newLocation: Location = {
               lat: event.latLng.lat(),
               lng: event.latLng.lng(),
-              address: '선택한 위치'
+              address: 'Selected Location'
             };
             onLocationChange(newLocation);
           }
@@ -52,12 +52,12 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({ center, places, onLocation
         setMap(mapInstance);
         setIsLoaded(true);
       } catch (error) {
-        console.error('Google Maps 로드 실패:', error);
+        console.error('Failed to load Google Maps:', error);
       }
     };
 
     initMap();
-  }, [onLocationChange]);
+  }, [onLocationChange, center]);
 
   // Update map center when location changes
   useEffect(() => {
@@ -86,7 +86,7 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({ center, places, onLocation
             <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
               <circle cx="20" cy="20" r="18" fill="#4285f4" stroke="#fff" stroke-width="2"/>
               <text x="20" y="26" text-anchor="middle" font-size="16" fill="white">
-                ${CATEGORY_ICONS[place.category] || '📍'}
+                ${CATEGORY_LABELS[place.category].charAt(0)}
               </text>
             </svg>
           `)}`,
@@ -101,9 +101,8 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({ center, places, onLocation
           <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
             <h3 style="margin: 0 0 8px 0; color: #333;">${place.name}</h3>
             ${place.rating ? `<div style="margin-bottom: 4px;">⭐ ${place.rating}</div>` : ''}
-            ${place.location.address ? `<div style="margin-bottom: 4px; color: #666; font-size: 12px;">${place.location.address}</div>` : ''}
-            ${place.phone ? `<div style="margin-bottom: 4px; color: #666; font-size: 12px;">📞 ${place.phone}</div>` : ''}
-            ${place.hours ? `<div style="color: #666; font-size: 12px;">🕒 ${place.hours}</div>` : ''}
+            ${place.address ? `<div style="margin-bottom: 4px; color: #666; font-size: 12px;">${place.address}</div>` : ''}
+            ${place.phoneNumber ? `<div style="margin-bottom: 4px; color: #666; font-size: 12px;">📞 ${place.phoneNumber}</div>` : ''}
           </div>
         `
       });
@@ -121,9 +120,9 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({ center, places, onLocation
       <div ref={mapRef} className="google-map" />
       {!isLoaded && (
         <div className="map-loading">
-          <div>지도를 불러오는 중...</div>
+          <div>Loading map...</div>
           <div style={{ fontSize: '12px', marginTop: '8px', color: '#666' }}>
-            Google Maps API 키가 필요합니다
+            Google Maps API key is required
           </div>
         </div>
       )}

@@ -1,6 +1,6 @@
 import React from 'react';
-import type { Place, PlaceCategory } from '@newcomers/types';
-import { CATEGORY_ICONS, CATEGORY_LABELS } from '@newcomers/shared';
+import type { Place, PlaceCategory } from '../types';
+import { CATEGORY_LABELS } from '../utils/constants';
 
 interface PlacesListProps {
   places: Place[];
@@ -18,7 +18,7 @@ export const PlacesList: React.FC<PlacesListProps> = ({
   if (loading) {
     return (
       <div className="places-list loading">
-        <div className="loading-spinner">⏳ 검색 중...</div>
+        <div className="loading-spinner">⏳ Searching...</div>
       </div>
     );
   }
@@ -29,7 +29,7 @@ export const PlacesList: React.FC<PlacesListProps> = ({
         <div className="error-message">
           ❌ {error}
           <br />
-          <small>백엔드 API 서버를 확인해주세요</small>
+          <small>Please check the backend API server</small>
         </div>
       </div>
     );
@@ -40,17 +40,17 @@ export const PlacesList: React.FC<PlacesListProps> = ({
       <div className="places-header">
         <h3>
           {selectedCategory 
-            ? `${CATEGORY_ICONS[selectedCategory]} ${CATEGORY_LABELS[selectedCategory]}` 
-            : '🌟 모든 장소'
-          } ({places.length}개)
+            ? `${CATEGORY_LABELS[selectedCategory]}` 
+            : '🌟 All Places'
+          } ({places.length} places)
         </h3>
       </div>
 
       {places.length === 0 ? (
         <div className="no-results">
           <div className="no-results-icon">🔍</div>
-          <div>근처에 해당하는 장소가 없습니다</div>
-          <small>다른 카테고리를 선택하거나 지도에서 다른 위치를 클릭해보세요</small>
+          <div>No places found nearby</div>
+          <small>Try selecting a different category or click on another location on the map</small>
         </div>
       ) : (
         <div className="places-grid">
@@ -58,7 +58,7 @@ export const PlacesList: React.FC<PlacesListProps> = ({
             <div key={place.id} className="place-card">
               <div className="place-header">
                 <div className="place-icon">
-                  {CATEGORY_ICONS[place.category]}
+                  {CATEGORY_LABELS[place.category].charAt(0)}
                 </div>
                 <div className="place-info">
                   <h4 className="place-name">{place.name}</h4>
@@ -74,27 +74,15 @@ export const PlacesList: React.FC<PlacesListProps> = ({
               </div>
 
               <div className="place-details">
-                {place.location.address && (
+                {place.address && (
                   <div className="place-detail">
-                    📍 {place.location.address}
+                    📍 {place.address}
                   </div>
                 )}
                 
-                {place.phone && (
+                {place.phoneNumber && (
                   <div className="place-detail">
-                    📞 {place.phone}
-                  </div>
-                )}
-                
-                {place.hours && (
-                  <div className="place-detail">
-                    🕒 {place.hours}
-                  </div>
-                )}
-                
-                {place.description && (
-                  <div className="place-description">
-                    {place.description}
+                    📞 {place.phoneNumber}
                   </div>
                 )}
               </div>
@@ -107,7 +95,7 @@ export const PlacesList: React.FC<PlacesListProps> = ({
                     window.open(url, '_blank');
                   }}
                 >
-                  🗺️ 길찾기
+                  🗺️ Directions
                 </button>
                 
                 {place.website && (
@@ -115,7 +103,7 @@ export const PlacesList: React.FC<PlacesListProps> = ({
                     className="action-button"
                     onClick={() => window.open(place.website, '_blank')}
                   >
-                    🌐 웹사이트
+                    🌐 Website
                   </button>
                 )}
               </div>

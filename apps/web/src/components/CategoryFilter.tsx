@@ -1,6 +1,6 @@
 import React from 'react';
-import { PlaceCategory } from '@newcomers/types';
-import { CATEGORY_ICONS, CATEGORY_LABELS } from '@newcomers/shared';
+import type { PlaceCategory } from '../types';
+import { CATEGORY_LABELS } from '../utils/constants';
 
 interface CategoryFilterProps {
   selectedCategory: PlaceCategory | null;
@@ -11,17 +11,17 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   selectedCategory,
   onCategoryChange
 }) => {
-  const categories = Object.values(PlaceCategory);
+  const categories: PlaceCategory[] = ['hospital', 'pharmacy', 'supermarket', 'restaurant', 'cafe', 'bank', 'school', 'park'];
 
   return (
     <div className="category-filter">
-      <h3>카테고리 선택</h3>
+      <h3>Select Category</h3>
       <div className="category-buttons">
         <button
           className={`category-button ${selectedCategory === null ? 'active' : ''}`}
           onClick={() => onCategoryChange(null)}
         >
-          🌟 전체
+          🌟 All
         </button>
         
         {categories.map(category => (
@@ -30,7 +30,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
             className={`category-button ${selectedCategory === category ? 'active' : ''}`}
             onClick={() => onCategoryChange(category)}
           >
-            {CATEGORY_ICONS[category]} {CATEGORY_LABELS[category]}
+            {CATEGORY_LABELS[category]}
           </button>
         ))}
       </div>
